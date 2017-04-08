@@ -1,0 +1,7 @@
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\bin\Debug\netcoreapp1.1\OlyCommonClasses.deps.json
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\bin\Debug\netcoreapp1.1\OlyCommonClasses.dll
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\bin\Debug\netcoreapp1.1\OlyCommonClasses.pdb
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\obj\Debug\netcoreapp1.1\OlyCommonClasses.csprojResolveAssemblyReference.cache
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\obj\Debug\netcoreapp1.1\OlyCommonClasses.AssemblyInfo.cs
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\obj\Debug\netcoreapp1.1\OlyCommonClasses.dll
+C:\Users\lindahl\documents\visual studio 2017\Projects\OlyCommonClasses\obj\Debug\netcoreapp1.1\OlyCommonClasses.pdb

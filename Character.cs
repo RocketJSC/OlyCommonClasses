@@ -30,6 +30,8 @@ namespace OlyCommonClasses
         public int _CH_Rank { get; set; }
         public int _CH_Sick { get; set; }
         public List<int> _CH_Skills_List { get; set; }
+        public int _CM_Appear_Common { get; set; }
+        public List<int> _CM_Auraculum { get; set; }
         public int _CM_Magician { get; set; }
         public int _CM_Pledged_To { get; set; }
         public int _CM_Max_Aura { get; set; }
@@ -102,6 +104,8 @@ namespace OlyCommonClasses
                 _CH_Rank = JSON.int_Token(j1, "CH.ra"),
                 _CH_Sick = JSON.int_Token(j1, "CH.si"),
                 _CH_Skills_List = JSON.list_Token(j1, "CH.sl"),
+                _CM_Appear_Common = JSON.int_Token(j1, "CM.cm"),
+                _CM_Auraculum = JSON.list_Token(j1, "CM.ar"),
                 _CM_Cur_Aura = JSON.int_Token(j1, "CM.ca"),
                 _CM_Hide_Self = JSON.int_Token(j1, "CM.hs"),
                 _CM_Magician = JSON.int_Token(j1, "CM.im"),

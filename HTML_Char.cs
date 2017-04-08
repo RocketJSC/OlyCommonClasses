@@ -61,7 +61,8 @@ namespace OlyCommonClasses
             Write_Char_Pledged_To(_myChar, w, _characters);
             Write_Char_Pledged_To_Us(_myChar, w, _characters);
             Write_Char_Concealed(_myChar, w, _characters, _items, _locations, _ships);
-            Write_Char_Aura(_myChar, w);
+            Write_Char_Aura(_myChar, w, _items);
+            // missing show appear common
             Write_Char_Prisoners(_myChar, w, _characters);
             w.WriteLine("</table>");
             Write_Char_Skills_Known(_myChar, w, _skills);
@@ -275,14 +276,22 @@ namespace OlyCommonClasses
             }
         }
 
-        private static void Write_Char_Aura(Character _myChar, StreamWriter w)
+        private static void Write_Char_Aura(Character _myChar, StreamWriter w, List<Itemz> _items)
         {
             if (_myChar._CM_Magician == 1)
             {
-                w.WriteLine("<tr><td>Current Aura:</td><td>" + _myChar._CM_Cur_Aura + "</td></tr>");
-                if (_myChar._CM_Max_Aura != 0)
+                if (_myChar._CM_Cur_Aura != 0)
                 {
-                    w.WriteLine("<tr><td>Max Aura:</td><td>" + _myChar._CM_Max_Aura + "</td></tr>");
+                    w.WriteLine("<tr><td>Current Aura:</td><td>" + _myChar._CM_Cur_Aura + "</td></tr>");
+                }
+                if (_myChar._CM_Auraculum != null)
+                {
+                    int AuraculumAura = _items.Find(x=>x._ItemId == _myChar._CM_Auraculum[0])._IM_Aura;
+                    w.WriteLine("<tr><td>Max Aura:</td><td>" + (_myChar._CM_Max_Aura + AuraculumAura) + " (" + _myChar._CM_Max_Aura + " + " + AuraculumAura + ")</td></tr>");
+                }
+                else
+                {
+                    w.WriteLine("<tr><td>Max Aura:</td><td>" + (_myChar._CM_Max_Aura)  + "</td></tr>");
                 }
             }
         }
