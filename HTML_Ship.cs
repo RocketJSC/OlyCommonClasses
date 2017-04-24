@@ -19,7 +19,7 @@ namespace OlyCommonClasses
                     w.WriteLine("<HEAD>");
                     w.WriteLine("<TITLE>" + _myship._Name +
                                 " [" + _myship._ShipId + "], " +
-                                _myship._ShipId +
+                                _myship._Ship_Type +
                                 "</TITLE>");
                     w.WriteLine("</HEAD>");
                     w.WriteLine("<BODY>");

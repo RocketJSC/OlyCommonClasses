@@ -18,8 +18,7 @@ namespace OlyCommonClasses
                     w.WriteLine("<HTML>");
                     w.WriteLine("<HEAD>");
                     w.WriteLine("<TITLE>" + _mychar._Name +
-                                " [" + _mychar._CharId + "], " +
-                                _mychar._CharId +
+                                " [" + _mychar._CharId + "]" +
                                 "</TITLE>");
                     w.WriteLine("</HEAD>");
                     w.WriteLine("<BODY>");

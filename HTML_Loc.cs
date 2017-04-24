@@ -893,7 +893,7 @@ namespace OlyCommonClasses
             }
             if (_myChar._CM_Magician == 1)
             {
-                outline.Append(", " + Character.Mage_Type(_myChar));
+                outline.Append(Character.Mage_Type(_myChar) != "" ? ", " + Character.Mage_Type(_myChar) : "");
             }
             if (_myChar._CH_Guard == 1)
             {
