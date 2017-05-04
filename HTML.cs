@@ -1196,17 +1196,8 @@ namespace OlyCommonClasses
                 fs.Dispose();
             }
         }
-        public static void Generate_Trade_List_HTML(string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations)
+        public static void Generate_Trade_List_HTML(string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<TradeXref> _TradeXref_Unsorted)
         {
-            List<TradeXref> _TradeXref_Unsorted = new List<TradeXref>();
-            foreach (Location _location in _locations.Where(f => f._Trade_List != null))
-            {
-                TradeXref.Load_Sells(_location, null, _TradeXref_Unsorted);
-            }
-            foreach (Location _location in _locations.Where(f => f._Trade_List != null))
-            {
-                TradeXref.Load_Buys(_location, null, _TradeXref_Unsorted);
-            }
             using (FileStream fs = new FileStream(System.IO.Path.Combine(path, "master_trade_sell_list.html"), FileMode.Create))
             {
                 using (StreamWriter w = new StreamWriter(fs, Encoding.UTF8))

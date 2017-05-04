@@ -9,7 +9,7 @@ namespace OlyCommonClasses
 {
     public class HTML_Loc
     {
-        public static void Write_Loc_HTML_File(Location _myloc, string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Player> _players,  List<Ship> _ships, List<Skill> _skills, List<Storm> _storms)
+        public static void Write_Loc_HTML_File(Location _myloc, string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Player> _players,  List<Ship> _ships, List<Skill> _skills, List<Storm> _storms, List<TradeXref> _TradeXref_Unsorted)
         {
             using (FileStream fs = new FileStream(System.IO.Path.Combine(path, _myloc._LocId_Conv + ".html"), FileMode.Create))
             {
@@ -33,7 +33,7 @@ namespace OlyCommonClasses
                     Write_Nearby_Cities(_myloc, w, _locations);
                     Write_Structure_Basic_Info(_myloc, w);
                     Write_Skills_Report(_myloc, w, _skills);
-                    Write_Market_Report(_myloc, w, _characters, _items);
+                    Write_Market_Report(_myloc, w, _characters, _items, _TradeXref_Unsorted, _locations);
                     // Print Here List (Inner Locations and Seen Here)
                     if (_myloc._LI_Here_List != null)
                     {
@@ -268,8 +268,7 @@ namespace OlyCommonClasses
         private static void Write_Routes_Out(Location _myloc, StreamWriter w, List<Location> _locations)
         {
             // Print Routes Out
-            //if (!_myloc._Loc_Type.Contains("city"))
-            if (_myloc._LocId >= 10000 && _myloc._LocId < 30000)
+            if (!_myloc._Loc_Type.Contains("city"))
             {
                 if (_myloc._LO_Province_Destination != null)
                 {
@@ -367,7 +366,7 @@ namespace OlyCommonClasses
             }
         }
 
-        private static void Write_Market_Report(Location _myloc, StreamWriter w, List<Character> _characters, List<Itemz> _items)
+        private static void Write_Market_Report(Location _myloc, StreamWriter w, List<Character> _characters, List<Itemz> _items, List<TradeXref> _TradeXref_Unsorted, List<Location> _locations)
         {
             // Market Report
             if (_myloc._Trade_List != null)
@@ -394,8 +393,48 @@ namespace OlyCommonClasses
                                 _Number = _myloc._Trade_List[(i * 8) + 2],
                                 _Price = _myloc._Trade_List[(i * 8) + 3],
                                 _Weight = _myitem._Weight,
-                                _Item_Name = _myitem._Name
+                                _Item_Name = _myitem._Name,
+                                _recip_Number = 0,
+                                _recip_Price = 0,
+                                _recip_Trade_Kind = 0,
+                                _recip_Who_id = 0,
+                                _recip_Who_id_Conv = null,
+                                _recip_Who_Type = 0
                             });
+                            // reread row just added
+                            var Trade = (_trades.Find(x => x._ItemId == _myitem._ItemId));
+                            if (Trade != null)
+                            {
+                                // lookup in tradexref
+                                TradeXref _my_tradexref = _TradeXref_Unsorted.Find(t => t._ItemId == _myitem._ItemId);
+                                if (_my_tradexref != null)
+                                {
+                                    // post reciprocal data on Trade 
+                                    // buy
+                                    if (Trade._Trade_Kind == 1)
+                                    {
+                                        Trade._recip_Trade_Kind = 2;
+                                        Trade._recip_Who_id = _my_tradexref._Sell_Who_id;
+                                        Trade._recip_Who_id_Conv = _my_tradexref._Sell_Who_id_Conv;
+                                        Trade._recip_Number = _my_tradexref._Sell_Number;
+                                        Trade._recip_Price = _my_tradexref._Sell_Price;
+                                        Trade._recip_Who_Type = _my_tradexref._Sell_Who_Type;
+                                    }
+                                    else
+                                    {
+                                        // sell
+                                        if (Trade._Trade_Kind == 2)
+                                        {
+                                            Trade._recip_Trade_Kind = 1;
+                                            Trade._recip_Who_id = _my_tradexref._Buy_Who_id;
+                                            Trade._recip_Who_id_Conv = _my_tradexref._Buy_Who_id_Conv;
+                                            Trade._recip_Number = _my_tradexref._Buy_Number;
+                                            Trade._recip_Price = _my_tradexref._Buy_Price;
+                                            Trade._recip_Who_Type = _my_tradexref._Buy_Who_Type;
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -424,7 +463,13 @@ namespace OlyCommonClasses
                                         _Number = Convert.ToInt32(_mychar._Trade_List[(i * 8) + 2]),
                                         _Price = Convert.ToInt32(_mychar._Trade_List[(i * 8) + 3]),
                                         _Weight = _myitem._Weight,
-                                        _Item_Name = _myitem._Name
+                                        _Item_Name = _myitem._Name,
+                                        _recip_Number = 0,
+                                        _recip_Price = 0,
+                                        _recip_Trade_Kind = 0,
+                                        _recip_Who_id = 0,
+                                        _recip_Who_id_Conv = null,
+                                        _recip_Who_Type = 0
                                     });
                                 }
                             }
@@ -433,9 +478,9 @@ namespace OlyCommonClasses
                 }
                 List<Trade> _trades_sorted = _trades.OrderBy(z => z._Trade_Kind).ThenBy(a => a._Who_id_Conv).ThenBy(b => b._ItemId_Conv).ToList();
                 //  write report
-                w.WriteLine("<H4>Market Report:</H4>");
+                w.WriteLine("<H4>" + Utilities.Format_Anchor2("master_trade_buy_list","Market Report:") + "</H4>");
                 w.WriteLine("<table border=\"1\" cellpadding=\"5\">");
-                w.WriteLine("<tr><th>trade</th><th>who</th><th>price</th><th>qty</th><th>wt/ea</th><th>item</th></tr>");
+                w.WriteLine("<tr><th>trade</th><th>who</th><th>price</th><th>qty</th><th>wt/ea</th><th>item</th><th>recip who</th><th>recip price</th><th>recip qty</th></tr>");
                 foreach (Trade _mytrade in _trades_sorted)
                 {
                     StringBuilder outline = new StringBuilder();
@@ -451,7 +496,20 @@ namespace OlyCommonClasses
                     outline.Append(_mytrade._Weight);
                     outline.Append("</td><td>");
                     outline.Append(_mytrade._Item_Name + " [" + _mytrade._ItemId_Conv + "]");
-                    outline.Append("</td></tr>");
+                    outline.Append("</td>");
+                    if (_mytrade._recip_Who_id_Conv != null)
+                    {
+                        outline.Append("<td>" + _locations.Find(l=>l._LocId == _mytrade._recip_Who_id)._Name + " " +  Utilities.Format_Anchor(_mytrade._recip_Who_id_Conv) + "</td>");
+                        outline.Append("<td>" + _mytrade._recip_Price + "</td>");
+                        outline.Append("<td>" + _mytrade._recip_Number + "</td>");
+                    }
+                    else
+                    {
+                        outline.Append("<td>&nbsp;</td>");
+                        outline.Append("<td>&nbsp;</td>");
+                        outline.Append("<td>&nbsp;</td>");
+                    }
+                    outline.Append("</tr>");
                     w.WriteLine(outline);
                 }
                 w.WriteLine("</Table>");
@@ -503,6 +561,10 @@ namespace OlyCommonClasses
                 {
                     Write_Province_Destination_HTML(_myloc._LO_Province_Destination[5], w, "Down", _myloc._Loc_Type, _locations);
                 }
+            }
+            if (_locations.Find(x=>x._LocId == _myloc._LI_Where)._Loc_Type != "region")
+            {
+                Write_Province_Destination_HTML(_myloc._LI_Where, w, "Out", _locations.Find(x => x._LocId == _myloc._LI_Where)._Loc_Type, _locations);
             }
             w.WriteLine("</ul>");
         }
@@ -618,7 +680,15 @@ namespace OlyCommonClasses
                                         }
                                         else
                                         {
-                                            //Console.WriteLine("undefined: " + _my_dest_loc._Loc_Type);
+                                            if (dest == "Down" || dest == "Up")
+                                            {
+                                                outline.Append(", ");
+                                                outline.Append(_locations.Find(x => x._LocId == _my_dest_loc._LI_Where)._Name);
+                                            }
+                                            if (dest == "Down" || dest == "Up" || dest == "Out" || from_type == "tunnel" || _my_dest_loc._Loc_Type == "tunnel")
+                                            {
+                                                outline.Append(", 0 days");
+                                            }
                                         }
                                     }
                                 }
@@ -879,6 +949,37 @@ namespace OlyCommonClasses
             outline.Append("<li>");
             outline.Append(_myChar._Name + " ");
             outline.Append(Utilities.Format_Anchor(_myChar._CharId.ToString()));
+            if ((Utilities.Xlate_Loyalty(_myChar._CH_LOY_Kind, _myChar._CH_LOY_Rate) != "Undefined") &&
+                (Utilities.Xlate_Loyalty(_myChar._CH_LOY_Kind, _myChar._CH_LOY_Rate) != "Npc"))
+            {
+                outline.Append(" (" + Utilities.Xlate_Loyalty(_myChar._CH_LOY_Kind, _myChar._CH_LOY_Rate));
+                if (_myChar._CH_Skills_List != null)
+                {
+                    int iterations = _myChar._CH_Skills_List.Count() / 5;
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        if (_myChar._CH_Skills_List[(i * 5) + 0] == 909)
+                        {
+                            outline.Append(":AB");
+                        }
+                    }
+                }
+                outline.Append(")");
+            }
+            else
+            {
+                if (_myChar._CH_Skills_List != null)
+                {
+                    int iterations = _myChar._CH_Skills_List.Count() / 5;
+                    for (int i = 0; i < iterations; i++)
+                    {
+                        if (_myChar._CH_Skills_List[(i * 5) + 0] == 909)
+                        {
+                            outline.Append("(AB)");
+                        }
+                    }
+                }
+            }
             if (!_myChar._Char_Type.Equals("0"))
             {
                 outline.Append(", " + _myChar._Char_Type);
@@ -893,7 +994,7 @@ namespace OlyCommonClasses
             }
             if (_myChar._CM_Magician == 1)
             {
-                outline.Append(Character.Mage_Type(_myChar) != "" ? ", " + Character.Mage_Type(_myChar) : "");
+                outline.Append(Character.Mage_Type(_myChar) != "" ? (", " + Character.Mage_Type(_myChar)) : "");
             }
             if (_myChar._CH_Guard == 1)
             {

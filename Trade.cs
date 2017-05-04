@@ -18,5 +18,11 @@ namespace OlyCommonClasses
         public int _Price { get; set; }
         public int _Weight { get; set; }
         public string _Item_Name { get; set; }
+        public int _recip_Who_id { get; set; }
+        public string _recip_Who_id_Conv { get; set; }
+        public int _recip_Who_Type { get; set; }
+        public int _recip_Trade_Kind { get; set; }
+        public int _recip_Number { get; set; }
+        public int _recip_Price { get; set; }
     }
 }

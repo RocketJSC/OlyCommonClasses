@@ -50,25 +50,34 @@ namespace OlyCommonClasses
         {
             w.WriteLine("<table>");
             Write_Char_Location(_myChar, w, _characters, _locations, _ships);
-            Write_Char_Rank(_myChar, w);
-            Write_Char_Loyalty(_myChar, w);
-            Write_Char_Stacked_Under(_myChar, w, _characters);
-            Write_Char_Stacked_Over(_myChar, w, _characters);
-            Write_Char_Health(_myChar, w);
-            Write_Char_Combat(_myChar, w);
-            Write_Char_Break_Point(_myChar, w);
-            Write_Char_Pledged_To(_myChar, w, _characters);
-            Write_Char_Pledged_To_Us(_myChar, w, _characters);
-            Write_Char_Concealed(_myChar, w, _characters, _items, _locations, _ships);
-            Write_Char_Aura(_myChar, w, _items);
-            // missing show appear common
-            Write_Char_Prisoners(_myChar, w, _characters);
+            if (_myChar._Char_Type.ToUpper() != "GARRISON")
+            {
+                Write_Char_Rank(_myChar, w);
+                Write_Char_Loyalty(_myChar, w);
+                Write_Char_Stacked_Under(_myChar, w, _characters);
+                Write_Char_Stacked_Over(_myChar, w, _characters);
+                Write_Char_Health(_myChar, w);
+                Write_Char_Combat(_myChar, w);
+                Write_Char_Break_Point(_myChar, w);
+                Write_Char_Pledged_To(_myChar, w, _characters);
+                Write_Char_Pledged_To_Us(_myChar, w, _characters);
+                Write_Char_Concealed(_myChar, w, _characters, _items, _locations, _ships);
+                Write_Char_Aura(_myChar, w, _items);
+                // missing show appear common
+                Write_Char_Prisoners(_myChar, w, _characters);
+            }
             w.WriteLine("</table>");
-            Write_Char_Skills_Known(_myChar, w, _skills);
+            if (_myChar._Char_Type.ToUpper() != "GARRISON")
+            {
+                Write_Char_Skills_Known(_myChar, w, _skills);
+            }
             Write_Char_Inventory(_myChar, w, _items);
-            Write_Char_Capacity(_myChar, w, _items);
-            Write_Char_Pending_Trades(_myChar, w, _items);
-            Write_Visions_Received(_myChar, w, _characters);
+            if (_myChar._Char_Type.ToUpper() != "GARRISON")
+            {
+                Write_Char_Capacity(_myChar, w, _items);
+                Write_Char_Pending_Trades(_myChar, w, _items);
+                Write_Visions_Received(_myChar, w, _characters);
+            }
         }
 
         private static void Write_Char_Pending_Trades(Character _myChar, StreamWriter w, List<Itemz> _items)
@@ -151,29 +160,31 @@ namespace OlyCommonClasses
                         total_weight += (_myitem._Weight * _qty);
                         StringBuilder outline = new StringBuilder();
                         outline.Append("<td>");
-                        if (_myitem._Fly_Capacity > 0)
+                        if (_myChar._Char_Type.ToUpper() != "GARRISON")
                         {
-                            outline.Append("fly " + (_myitem._Fly_Capacity * _qty).ToString("N0"));
-                        }
-                        else
-                        {
-                            if (_myitem._Ride_Capacity > 0)
+                            if (_myitem._Fly_Capacity > 0)
                             {
-                                outline.Append("ride " + (_myitem._Ride_Capacity * _qty).ToString("N0"));
+                                outline.Append("fly " + (_myitem._Fly_Capacity * _qty).ToString("N0"));
                             }
                             else
                             {
-                                if (_myitem._Land_Capacity > 0)
+                                if (_myitem._Ride_Capacity > 0)
                                 {
-                                    outline.Append("cap " + (_myitem._Land_Capacity * _qty).ToString("N0"));
+                                    outline.Append("ride " + (_myitem._Ride_Capacity * _qty).ToString("N0"));
+                                }
+                                else
+                                {
+                                    if (_myitem._Land_Capacity > 0)
+                                    {
+                                        outline.Append("cap " + (_myitem._Land_Capacity * _qty).ToString("N0"));
+                                    }
                                 }
                             }
+                            if (Itemz.Is_Fighter(_myitem))
+                            {
+                                outline.AppendFormat(" ({0},{1},{2})", _myitem._IT_Attack, _myitem._IT_Defense, _myitem._IT_Missile);
+                            }
                         }
-                        if (Itemz.Is_Fighter(_myitem))
-                        {
-                            outline.AppendFormat(" ({0},{1},{2})", _myitem._IT_Attack, _myitem._IT_Defense, _myitem._IT_Missile);
-                        }
-
                         outline.Append(_myitem._IM_Attack_Bonus > 0 ? ("+" + _myitem._IM_Attack_Bonus + " attack"):"");
                         outline.Append(_myitem._IM_Defense_Bonus > 0 ? ("+" + _myitem._IM_Defense_Bonus + " defense") : "");
                         outline.Append(_myitem._IM_Missile_Bonus > 0 ? ("+" + _myitem._IM_Missile_Bonus + " missile") : "");
@@ -181,7 +192,7 @@ namespace OlyCommonClasses
                         {
                             outline.AppendFormat("+{0} aura)", _myitem._IM_Aura_Bonus);
                         }
-                        outline.Append("</td>");
+                        outline.Append("&nbsp;</td>");
                         w.WriteLine(outline);
                     }
                     else
@@ -192,8 +203,11 @@ namespace OlyCommonClasses
                     }
                     w.WriteLine("</tr>");
                 }
-                w.WriteLine("<tr><td></td><td></td><td style=\"text-align:right\">=====</td><td>&nbsp;</td></tr>");
-                w.WriteLine("<tr><td></td><td></td><td style=\"text-align:right\">" + total_weight.ToString("N0") + "</td><td>&nbsp;</td></tr>");
+                if (_myChar._Char_Type.ToUpper() != "GARRISON")
+                {
+                    w.WriteLine("<tr><td></td><td></td><td style=\"text-align:right\">=====</td><td>&nbsp;</td></tr>");
+                    w.WriteLine("<tr><td></td><td></td><td style=\"text-align:right\">" + total_weight.ToString("N0") + "</td><td>&nbsp;</td></tr>");
+                }
                 w.WriteLine("</table>");
             }
             else

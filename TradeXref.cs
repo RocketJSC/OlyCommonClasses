@@ -86,6 +86,7 @@ namespace OlyCommonClasses
                                     if (_tradexref != null)
                                     {
                                         _tradexref._Buy_Who_id = l_entityid;
+                                        _tradexref._Buy_Who_id_Conv = Utilities.To_Oid(l_entityid.ToString());
                                         _tradexref._Buy_Number = l_qty;
                                         _tradexref._Buy_Price = l_cost;
                                         _tradexref._Buy_Region = l_region;
@@ -106,11 +107,14 @@ namespace OlyCommonClasses
             mytradexref.Add(new TradeXref
             {
                 _ItemId = l_itemid,
+                _ItemId_Conv = Utilities.To_Oid(l_itemid.ToString()),
                 _Sell_Who_id = l_entityid,
+                _Sell_Who_id_Conv = Utilities.To_Oid(l_entityid.ToString()),
                 _Sell_Region = l_region,
                 _Sell_Number = l_qty,
                 _Sell_Price = l_cost,
                 _Buy_Who_id = 0,
+                _Buy_Who_id_Conv = null,
                 _Buy_Number = 0,
                 _Buy_Price = 0,
                 _Buy_Region = 0
@@ -121,11 +125,14 @@ namespace OlyCommonClasses
             mytradexref.Add(new TradeXref
             {
                 _ItemId = l_itemid,
+                _ItemId_Conv = Utilities.To_Oid(l_itemid.ToString()),
                 _Buy_Who_id = l_entityid,
+                _Buy_Who_id_Conv = Utilities.To_Oid(l_entityid.ToString()),
                 _Buy_Region = l_region,
                 _Buy_Number = l_qty,
                 _Buy_Price = l_cost,
                 _Sell_Who_id = 0,
+                _Sell_Who_id_Conv = null,
                 _Sell_Number = 0,
                 _Sell_Price = 0,
                 _Sell_Region = 0
