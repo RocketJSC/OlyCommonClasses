@@ -9,7 +9,7 @@ namespace OlyCommonClasses
 {
     public class HTML_Char
     {
-        public static void Write_Char_HTML_File(Character _mychar, string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Ship> _ships, List<Skill> _skills)
+        public static void Write_Char_HTML_File(Character _mychar, string path, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Ship> _ships, List<Skill> _skills, List<Player> _players)
         {
             using (FileStream fs = new FileStream(System.IO.Path.Combine(path, _mychar._CharId + ".html"), FileMode.Create))
             {
@@ -27,7 +27,7 @@ namespace OlyCommonClasses
                     {
                         w.WriteLine("<p>" + _mychar._Name + " [" + _mychar._CharId + "] is being held prisoner.</p>");
                     }
-                    Write_Char_Basic_Info(_mychar, w, _characters, _items, _locations, _ships, _skills);
+                    Write_Char_Basic_Info(_mychar, w, _characters, _items, _locations, _ships, _skills, _players);
 
                     w.WriteLine("</BODY>");
                     w.WriteLine("</HTML>");
@@ -46,13 +46,14 @@ namespace OlyCommonClasses
             outline3.Append("</H3>");
             w.WriteLine(outline3);
         }
-        private static void Write_Char_Basic_Info(Character _myChar, StreamWriter w, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Ship> _ships, List<Skill> _skills)
+        private static void Write_Char_Basic_Info(Character _myChar, StreamWriter w, List<Character> _characters, List<Itemz> _items, List<Location> _locations, List<Ship> _ships, List<Skill> _skills, List<Player> _players)
         {
             w.WriteLine("<table>");
             Write_Char_Location(_myChar, w, _characters, _locations, _ships);
             if (_myChar._Char_Type.ToUpper() != "GARRISON")
             {
                 Write_Char_Rank(_myChar, w);
+                Write_Char_Faction(_myChar, w, _players);
                 Write_Char_Loyalty(_myChar, w);
                 Write_Char_Stacked_Under(_myChar, w, _characters);
                 Write_Char_Stacked_Over(_myChar, w, _characters);
@@ -78,8 +79,112 @@ namespace OlyCommonClasses
                 Write_Char_Pending_Trades(_myChar, w, _items);
                 Write_Visions_Received(_myChar, w, _characters);
             }
+            Write_Magic_Stuff(_myChar, w, _items, _skills, _locations, _ships);
         }
-
+        private static void Write_Char_Faction(Character _myChar, StreamWriter w, List<Player> _players)
+        {
+            w.WriteLine("<tr>");
+            w.WriteLine("<td>Faction:</td>");
+            w.WriteLine("<td>" + _players.Find(x => x._FactionId == _myChar._PlayerId)._Name + " [" + _players.Find(x => x._FactionId == _myChar._PlayerId)._FactionId_Conv + "]</td>");
+            w.WriteLine("</tr>");
+        }
+        private static void Write_Magic_Stuff(Character _MyChar, StreamWriter w, List<Itemz> _items, List<Skill> _skills, List<Location> _locations, List<Ship> _ships)
+        {
+            StringBuilder outline = new StringBuilder();
+            if (_MyChar._Item_List != null)
+            {
+                int iterations = _MyChar._Item_List.Count() / 2;
+                for (int i = 0; i < iterations; i++)
+                {
+                    int _item = _MyChar._Item_List[(i * 2)];
+                    Itemz _myitem = _items.Find(x => x._ItemId == _item);
+                    if (_myitem != null)
+                    {
+                        if (_myitem._Item_Type == "0")
+                        {
+                            if (_myitem._IM_Use_Key == 2)
+                            {
+                                // healing potion
+                                outline.Clear();
+                                outline.Append("<p>");
+                                outline.Append("Healing Potion ");
+                                outline.Append(Utilities.Format_Anchor(_myitem._ItemId_Conv));
+                                outline.Append("</p>");
+                                w.WriteLine(outline);
+                            }
+                            else
+                            {
+                                if (_myitem._IM_Use_Key == 5)
+                                {
+                                    // potion
+                                    outline.Clear();
+                                    outline.Append("<p>");
+                                    outline.Append("Projected Cast ");
+                                    outline.Append(Utilities.Format_Anchor(_myitem._ItemId_Conv));
+                                    outline.Append(" to ");
+                                    if (_myitem._IM_Project_Cast !=  0)
+                                    {
+                                        Location _myloc = _locations.Find(x => x._LocId == _myitem._IM_Project_Cast);
+                                        if (_myloc != null)
+                                        {
+                                            outline.Append("location " + _myloc._Name + " " + Utilities.Format_Anchor(_myloc._LocId_Conv));
+                                        }
+                                        else
+                                        {
+                                            Ship _myship = _ships.Find(x => x._ShipId == _myitem._IM_Project_Cast);
+                                            if (_myship != null)
+                                            {
+                                                outline.Append("ship " + _myship._Name + " " + Utilities.Format_Anchor(_myship._ShipId.ToString()));
+                                            }
+                                            else
+                                            {
+                                                outline.Append("target [" + _myitem._IM_Project_Cast + "] no longer exists");
+                                            }
+                                        }
+                                    }
+                                    outline.Append("</p>");
+                                    w.WriteLine(outline);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (_myitem._Item_Type == "scroll")
+                            {
+                                // scroll
+                                //Scroll[p294] permits study of the following skills:
+                                //    Hinder meditation[814] (requires Magic)
+                                Skill _myskill = _skills.Find(x => x._SkillId == _myitem._IM_May_Study);
+                                outline.Clear();
+                                outline.Append("<p>");
+                                outline.Append("Scroll ");
+                                outline.Append(Utilities.Format_Anchor(_myitem._ItemId_Conv));
+                                outline.Append(" permits the study of the following skills:<br>");
+                                outline.Append("&nbsp;&nbsp;&nbsp;");
+                                if (_myskill == null)
+                                {
+                                    outline.Append("???");
+                                }
+                                else
+                                {
+                                    outline.Append(_myskill._Name + " ");
+                                    outline.Append(Utilities.Format_Anchor(_myskill._SkillId.ToString()));
+                                    if (_myskill._SK_Required_Skill != 0)
+                                    {
+                                        Skill _myskill_req = _skills.Find(x => x._SkillId == _myskill._SK_Required_Skill);
+                                        outline.Append(" (requires ");
+                                        outline.Append(_myskill_req._Name);
+                                        outline.Append(")");
+                                    }
+                                }
+                                outline.Append("</p>");
+                                w.WriteLine(outline);
+                            }
+                        }
+                    }
+                }
+            }
+        }
         private static void Write_Char_Pending_Trades(Character _myChar, StreamWriter w, List<Itemz> _items)
         {
             if (_myChar._Trade_List != null)
@@ -184,24 +289,24 @@ namespace OlyCommonClasses
                             {
                                 outline.AppendFormat(" ({0},{1},{2})", _myitem._IT_Attack, _myitem._IT_Defense, _myitem._IT_Missile);
                             }
+                            outline.Append(_myitem._IM_Attack_Bonus > 0 ? ("+" + _myitem._IM_Attack_Bonus + " attack") : "");
+                            outline.Append(_myitem._IM_Defense_Bonus > 0 ? ("+" + _myitem._IM_Defense_Bonus + " defense") : "");
+                            outline.Append(_myitem._IM_Missile_Bonus > 0 ? ("+" + _myitem._IM_Missile_Bonus + " missile") : "");
+                            if (Character.Is_Magician(_myChar) && _myitem._IM_Aura_Bonus > 0)
+                            {
+                                outline.AppendFormat("+{0} aura)", _myitem._IM_Aura_Bonus);
+                            }
+                            outline.Append("&nbsp;</td>");
+                            w.WriteLine(outline);
                         }
-                        outline.Append(_myitem._IM_Attack_Bonus > 0 ? ("+" + _myitem._IM_Attack_Bonus + " attack"):"");
-                        outline.Append(_myitem._IM_Defense_Bonus > 0 ? ("+" + _myitem._IM_Defense_Bonus + " defense") : "");
-                        outline.Append(_myitem._IM_Missile_Bonus > 0 ? ("+" + _myitem._IM_Missile_Bonus + " missile") : "");
-                        if (Character.Is_Magician(_myChar) && _myitem._IM_Aura_Bonus > 0)
+                        else
                         {
-                            outline.AppendFormat("+{0} aura)", _myitem._IM_Aura_Bonus);
+                            w.WriteLine("<td>" + "undefined" + "</td>");
+                            w.WriteLine("<td>" + 0 + "</td>");
+                            w.WriteLine("<td>&nbsp;</td>");
                         }
-                        outline.Append("&nbsp;</td>");
-                        w.WriteLine(outline);
+                        w.WriteLine("</tr>");
                     }
-                    else
-                    {
-                        w.WriteLine("<td>" + "undefined" + "</td>");
-                        w.WriteLine("<td>" + 0 + "</td>");
-                        w.WriteLine("<td>&nbsp;</td>");
-                    }
-                    w.WriteLine("</tr>");
                 }
                 if (_myChar._Char_Type.ToUpper() != "GARRISON")
                 {
@@ -399,7 +504,7 @@ namespace OlyCommonClasses
             outline.Append(_myChar._CH_Health + "%");
             if (_myChar._CH_Health < 100)
             {
-                outline.Append(_myChar._CH_Sick.Equals(1) ? " (getting worse)":" (getting better");
+                outline.Append(_myChar._CH_Sick.Equals(1) ? " (getting worse)":" (getting better)");
             }
             outline.Append("</td>");
             outline.Append("</tr>");

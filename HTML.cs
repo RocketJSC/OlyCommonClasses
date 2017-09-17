@@ -25,8 +25,8 @@ namespace OlyCommonClasses
                     w.WriteLine("<th>");
                     w.WriteLine("<ul>Maps<br>");
                     w.WriteLine("<li><a href=\"main_map.html\">Main</a></li>");
-                    w.WriteLine("<li>Hades</li>");
-                    w.WriteLine("<li>Faery</li>");
+                    w.WriteLine("<li><a href=\"hades_map.html\">Hades</a></li>");
+                    w.WriteLine("<li><a href=\"faery_map.html\">Faery</a></li>");
                     w.WriteLine("</ul>");
                     w.WriteLine("</th>");
                     w.WriteLine("<th>");
@@ -122,6 +122,77 @@ namespace OlyCommonClasses
                     w.WriteLine("<area shape=\"rect\" coords=\"180,260,220,320\" href=\"main_map_leaf_da40.html\" />");
                     w.WriteLine("<area shape=\"rect\" coords=\"220,260,260,320\" href=\"main_map_leaf_da50.html\" />");
                     w.WriteLine("<area shape=\"rect\" coords=\"260,260,320,320\" href=\"main_map_leaf_da60.html\" />");
+                    w.WriteLine("</map>");
+                    w.WriteLine("</BODY>");
+                    w.WriteLine("</html>");
+                }
+                fs.Dispose();
+            }
+        }
+        public static void Write_Faery_Map_HTML_File(string path)
+        {
+            using (FileStream fs = new FileStream(System.IO.Path.Combine(path, "faery_map.html"), FileMode.Create))
+            {
+                using (StreamWriter w = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    w.WriteLine("<HTML>");
+                    w.WriteLine("<HEAD>");
+                    w.WriteLine("<TITLE>Faery Map</TITLE>");
+                    w.WriteLine("<link href=\"map.css\" rel=\"stylesheet\" type=\"text/css\">");
+                    w.WriteLine("</HEAD>");
+                    w.WriteLine("<BODY>");
+                    w.WriteLine("<h3>Olympia Faery Map</h3>");
+                    w.WriteLine("<img height=\"240\" width=\"240\" src=\"faery_thumbnail.gif\" usemap=\"#oly\" />");
+                    w.WriteLine("<map name=\"oly\" id=\"oly\">");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0, 0, 60, 60\" href=\"faery_map_leaf_fa00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,0,100,60\" href=\"faery_map_leaf_fa10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,0,140,60\" href=\"faery_map_leaf_fa20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,0,180,60\" href=\"faery_map_leaf_fa30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,0,220,60\" href=\"faery_map_leaf_fa40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,0,260,60\" href=\"faery_map_leaf_fa50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,0,320,60\" href=\"faery_map_leaf_fa60.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0,60,60,100\" href=\"faery_map_leaf_fn00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,60,100,100\" href=\"faery_map_leaf_fn10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,60,140,100\" href=\"faery_map_leaf_fn20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,60,180,100\" href=\"faery_map_leaf_fn30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,60,220,100\" href=\"faery_map_leaf_fn40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,60,260,100\" href=\"faery_map_leaf_fn50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,60,320,100\" href=\"faery_map_leaf_fn60.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0,100,60,140\" href=\"faery_map_leaf_ga00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,100,100,140\" href=\"faery_map_leaf_ga10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,100,140,140\" href=\"faery_map_leaf_ga20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,100,180,140\" href=\"faery_map_leaf_ga30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,100,220,140\" href=\"faery_map_leaf_ga40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,100,260,140\" href=\"faery_map_leaf_ga50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,100,320,140\" href=\"faery_map_leaf_ga60.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0,140,60,180\" href=\"faery_map_leaf_gn00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,140,100,180\" href=\"faery_map_leaf_gn10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,140,140,180\" href=\"faery_map_leaf_gn20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,140,180,180\" href=\"faery_map_leaf_gn30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,140,220,180\" href=\"faery_map_leaf_gn40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,140,260,180\" href=\"faery_map_leaf_gn50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,140,320,180\" href=\"faery_map_leaf_gn60.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0,180,60,220\" href=\"faery_map_leaf_ha00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,180,100,220\" href=\"faery_map_leaf_ha10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,180,140,220\" href=\"faery_map_leaf_ha20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,180,180,22\" href=\"faery_map_leaf_ha30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,180,220,220\" href=\"faery_map_leaf_ha40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,180,260,220\" href=\"faery_map_leaf_ha50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,180,320,220\" href=\"faery_map_leaf_ha60.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"0,220,60,260\" href=\"faery_map_leaf_hn00.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"60,220,100,260\" href=\"faery_map_leaf_hn10.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"100,220,140,260\" href=\"faery_map_leaf_hn20.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"140,220,180,260\" href=\"faery_map_leaf_hn30.html\" />");
+                    w.WriteLine("<area shape=\"rect\" coords=\"180,220,220,260\" href=\"faery_map_leaf_hn40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,220,260,260\" href=\"faery_map_leaf_hn50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,220,320,260\" href=\"faery_map_leaf_hn60.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"0,260,60,320\" href=\"faery_map_leaf_da00.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"60,260,100,320\" href=\"faery_map_leaf_da10.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"100,260,140,320\" href=\"faery_map_leaf_da20.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"140,260,180,320\" href=\"faery_map_leaf_da30.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"180,260,220,320\" href=\"faery_map_leaf_da40.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"220,260,260,320\" href=\"faery_map_leaf_da50.html\" />");
+                    //w.WriteLine("<area shape=\"rect\" coords=\"260,260,320,320\" href=\"faery_map_leaf_da60.html\" />");
                     w.WriteLine("</map>");
                     w.WriteLine("</BODY>");
                     w.WriteLine("</html>");
@@ -536,6 +607,7 @@ namespace OlyCommonClasses
         }
         public static void Write_Faery_Map_Leaves_HTML_File(string path, List<Location> _locations)
         {
+            // max is 22500, mod < 45
             int StartingPoint = 18000;
             int CurrentPoint;
             for (int outery = 0; outery < 7; outery++)
@@ -554,6 +626,7 @@ namespace OlyCommonClasses
                             w.WriteLine("<link href=\"map.css\" rel=\"stylesheet\" type=\"text/css\">");
                             w.WriteLine("</HEAD>");
                             w.WriteLine("<BODY>");
+                            w.WriteLine(Utilities.Format_Anchor2("faery_map", "Return to Main Map"));
                             w.WriteLine("<table>");
                             // determine nav
                             bool TopNav = false;
@@ -636,80 +709,83 @@ namespace OlyCommonClasses
                                     Location _myloc = _locations.Find(z => z._LocId == Cell);
                                     if (_myloc != null)
                                     {
-                                        outline.Append("<td id=\"" + _myloc._LocId_Conv + "\"class=" + "\"");
-                                        outline.Append(_myloc._Loc_Type + "\"" + ">");
-                                        outline.Append(Utilities.Format_Anchor2(_myloc._LocId_Conv, _myloc._LocId_Conv));
-                                        if (_myloc._LI_Here_List != null)
-                                        {
-                                            //if (_myloc._LI_Here_List.Count > 0 && !_myloc._Loc_Type.Equals("ocean"))
-                                            if (_myloc._LI_Here_List.Count > 0)
+                                        if (_myloc._Name.Equals("Faery"))
+                                        { 
+                                            outline.Append("<td id=\"" + _myloc._LocId_Conv + "\" class=" + "\"");
+                                            outline.Append(_myloc._Loc_Type + "\"" + ">");
+                                            outline.Append(Utilities.Format_Anchor2(_myloc._LocId_Conv, _myloc._LocId_Conv));
+                                            if (_myloc._LI_Here_List != null)
                                             {
-                                                // >= 56760
-                                                Location loc1 = null;
-                                                Location loc2 = null;
-                                                int Count = 0;
-                                                foreach (int _here_id in _myloc._LI_Here_List)
+                                                //if (_myloc._LI_Here_List.Count > 0 && !_myloc._Loc_Type.Equals("ocean"))
+                                                if (_myloc._LI_Here_List.Count > 0)
                                                 {
-                                                    if (_here_id >= 56760)
+                                                    // >= 56760
+                                                    Location loc1 = null;
+                                                    Location loc2 = null;
+                                                    int Count = 0;
+                                                    foreach (int _here_id in _myloc._LI_Here_List)
                                                     {
-                                                        Count++;
-                                                        if (loc2 == null)
+                                                        if (_here_id >= 56760)
                                                         {
-                                                            loc2 = _locations.Find(z => z._LocId == _here_id);
-                                                        }
-                                                        else
-                                                        {
-                                                            if (loc1 == null)
+                                                            Count++;
+                                                            if (loc2 == null)
                                                             {
-                                                                loc1 = _locations.Find(z => z._LocId == _here_id);
+                                                                loc2 = _locations.Find(z => z._LocId == _here_id);
+                                                            }
+                                                            else
+                                                            {
+                                                                if (loc1 == null)
+                                                                {
+                                                                    loc1 = _locations.Find(z => z._LocId == _here_id);
+                                                                }
                                                             }
                                                         }
                                                     }
-                                                }
-                                                if (loc1 != null)
-                                                {
-                                                    if (Count > 2)
+                                                    if (loc1 != null)
                                                     {
-                                                        outline.Append("<br />many");
-                                                    }
-                                                    else
-                                                    {
-                                                        if (loc1._Loc_Type.Contains("city") || loc1._Loc_Type.Equals("graveyard"))
+                                                        if (Count > 2)
                                                         {
-                                                            outline.Append("<br />" + Utilities.Format_Anchor2(loc1._LocId_Conv, loc1._Loc_Type));
+                                                            outline.Append("<br />many");
                                                         }
                                                         else
                                                         {
-                                                            outline.Append("<br />" + Utilities.Format_Loc_Type(loc1._Loc_Type));
+                                                            if (loc1._Loc_Type.Contains("city") || loc1._Loc_Type.Equals("graveyard"))
+                                                            {
+                                                                outline.Append("<br />" + Utilities.Format_Anchor2(loc1._LocId_Conv, loc1._Loc_Type));
+                                                            }
+                                                            else
+                                                            {
+                                                                outline.Append("<br />" + Utilities.Format_Loc_Type(loc1._Loc_Type));
+                                                            }
                                                         }
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    outline.Append("<br />&nbsp;");
-                                                }
-                                                if (loc2 != null)
-                                                {
-                                                    if (loc2._Loc_Type.Contains("city") || loc2._Loc_Type.Equals("graveyard"))
-                                                    {
-                                                        outline.Append("<br />" + Utilities.Format_Anchor2(loc2._LocId_Conv, loc2._Loc_Type));
                                                     }
                                                     else
                                                     {
-                                                        outline.Append("<br />" + Utilities.Format_Loc_Type(loc2._Loc_Type));
+                                                        outline.Append("<br />&nbsp;");
+                                                    }
+                                                    if (loc2 != null)
+                                                    {
+                                                        if (loc2._Loc_Type.Contains("city") || loc2._Loc_Type.Equals("graveyard"))
+                                                        {
+                                                            outline.Append("<br />" + Utilities.Format_Anchor2(loc2._LocId_Conv, loc2._Loc_Type));
+                                                        }
+                                                        else
+                                                        {
+                                                            outline.Append("<br />" + Utilities.Format_Loc_Type(loc2._Loc_Type));
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        outline.Append("<br />&nbsp;");
                                                     }
                                                 }
                                                 else
                                                 {
-                                                    outline.Append("<br />&nbsp;");
+                                                    outline.Append("<br />&nbsp;<br />&nbsp;");
+                                                    outline.Append("</td>");
                                                 }
                                             }
-                                            else
-                                            {
-                                                outline.Append("<br />&nbsp;<br />&nbsp;");
-                                                outline.Append("</td>");
-                                            }
-                                        }
+                                         }
                                         else
                                         {
                                             outline.Append("<br />&nbsp;<br />&nbsp;");
@@ -754,6 +830,7 @@ namespace OlyCommonClasses
                                 w.WriteLine("</tr>");
                             }
                             w.WriteLine("</table>");
+                            w.WriteLine(Utilities.Format_Anchor2("faery_map", "Return to Main Map"));
                             w.WriteLine("</BODY>");
                             w.WriteLine("</HTML>");
                         }
@@ -766,10 +843,10 @@ namespace OlyCommonClasses
         {
             int StartingPoint = 24000;
             int CurrentPoint;
-            for (int outery = 0; outery < 5; outery++)
+            for (int outery = 0; outery < 4; outery++)
             {
                 StartingPoint = 24000 + (outery * 1000);
-                for (int outerx = 0; outerx < 5; outerx++)
+                for (int outerx = 0; outerx < 4; outerx++)
                 {
                     CurrentPoint = StartingPoint + (outerx * 10);
                     using (FileStream fs = new FileStream(System.IO.Path.Combine(path, "hades_map_leaf_" + Utilities.To_Oid(CurrentPoint.ToString()) + ".html"), FileMode.Create))
@@ -782,7 +859,7 @@ namespace OlyCommonClasses
                             w.WriteLine("<link href=\"map.css\" rel=\"stylesheet\" type=\"text/css\">");
                             w.WriteLine("</HEAD>");
                             w.WriteLine("<BODY>");
-                            w.WriteLine(Utilities.Format_Anchor2("hades_map.html","Return to Main Map"));
+                            w.WriteLine(Utilities.Format_Anchor2("hades_map","Return to Main Map"));
                             w.WriteLine("<table>");
                             // determine nav
                             bool TopNav = false;
@@ -814,7 +891,7 @@ namespace OlyCommonClasses
                                     LowerLeftNav = true;
                                 }
                             }
-                            if ((y1 % 10) > 1 || (y1 / 10) < 4)
+                            if ((y1 % 10) > 1 || (y1 / 10) < 3) //  changed 3 from 4
                             {
                                 RightNav = true;
                                 if (TopNav)
@@ -1088,6 +1165,37 @@ namespace OlyCommonClasses
                         {
                             w.WriteLine("<td>&nbsp;</td>");
                         }
+                        w.WriteLine("</tr>");
+                    }
+                    w.WriteLine("</table>");
+                    w.WriteLine("</BODY>");
+                    w.WriteLine("</HTML>");
+                }
+                fs.Dispose();
+            }
+        }
+        public static void Generate_Location_List_HTML(string path, List<Location> _locations)
+        {
+            using (FileStream fs = new FileStream(System.IO.Path.Combine(path, "master_location_list.html"), FileMode.Create))
+            {
+                using (StreamWriter w = new StreamWriter(fs, Encoding.UTF8))
+                {
+                    w.WriteLine("<HTML>");
+                    w.WriteLine("<HEAD>");
+                    w.WriteLine("<TITLE>Olympia Master Location List</TITLE>");
+                    w.WriteLine("</HEAD>");
+                    w.WriteLine("<BODY>");
+                    w.WriteLine("<h3>Olympia Master Location List</h3>");
+                    w.WriteLine("<table border=\"1\" style=\"border-collapse: collapse\">");
+                    w.WriteLine("<tr>");
+                    w.WriteLine("<th>Loc Id</th><th>Location Type</th><th>Region</th>");
+                    w.WriteLine("</tr>");
+                    foreach (Location _location in _locations)
+                    {
+                        w.WriteLine("<tr>");
+                        w.WriteLine("<td>" + _location._LocId + "/" +_location._LocId_Conv + "</td>");
+                        w.WriteLine("<td>" + _location._Loc_Type + "</td>");
+                        w.WriteLine("<td>" + _location._Region_id + "/" + _locations.Find(d=>d._LocId == _location._Region_id)._Name + "</td>");
                         w.WriteLine("</tr>");
                     }
                     w.WriteLine("</table>");

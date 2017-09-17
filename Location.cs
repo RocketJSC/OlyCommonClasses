@@ -336,5 +336,131 @@ namespace OlyCommonClasses
             }
             return return_tuple;
         }
+        public static int Calc_Exit_Distance(Location _loc1, Location _loc2)
+        {
+            if (_loc1._Loc_Type == "pit" || _loc2._Loc_Type == "pit")
+            {
+                return 28;
+            }
+            if (loc_depth(_loc1) > loc_depth(_loc2))
+            {
+                Location tmp;
+
+                tmp = _loc1;
+                _loc1 = _loc2;
+                _loc2 = tmp;
+            }
+
+            int w_d = loc_depth(_loc1);
+            int d_d = loc_depth(_loc2);
+
+            if (d_d == 4)
+                return 0;
+            if (d_d == 3)
+                return 1;
+
+            if (_loc1._Loc_Type == "ocean" && _loc2._Loc_Type != "ocean")
+            {
+                return 2;
+            }
+            if (_loc1._Loc_Type != "ocean" && _loc2._Loc_Type == "ocean")
+            {
+                return 2;
+            }
+            //
+            // skipping province logic
+            //
+            switch (_loc2._Loc_Type)
+            {
+                case "ocean":
+                    // skipping sea lane logic
+                    return 3;
+                case "mountain": return 10;
+                case "forest": return 8;
+                case "swamp": return 14;
+                case "desert": return 8;
+                case "plain": return 7;
+                case "underground": return 7;
+                case "cloud": return 7;
+                case "tunnel": return 5;
+                case "chamber": return 5;
+            }
+            return 0;
+        }
+        public static int loc_depth(Location loc)
+        {
+            switch (loc._Loc_Type)
+            {
+                case "region": return 1;
+                case "ocean":
+                case "plain":
+                case "forest":
+                case "mountain":
+                case "desert":
+                case "swamp":
+                case "underground":
+                case "cloud":
+                case "tunnel":
+                case "chamber":  return 2;
+                case "island":
+                case "ring of stones":
+                case "mallorn grove":
+                case "bog":
+                case "city":
+                case "port city":
+                case "lair":
+                case "graveyard":
+                case "ruins":
+                case "battlefield":
+                case "enchanted forest":
+                case "rocky hill":
+                case "circle of trees":
+                case "pits":
+                case "pasture":
+                case "oasis":
+                case "yew grove":
+                //case "sand pit":
+                case "sacred grove":
+                case "poppy field":
+                case "faery hill":
+                case "sand pit": return 3;
+                case "temple":
+                case "galley":
+                case "roundship":
+                case "castle":
+                case "gally-in-progress":
+                case "roundship-in-progress":
+                case "ghost ship":
+                case "temple-in-progress":
+                case "inn":
+                case "inn-in-progress":
+                case "castle-in-progress":
+                case "mine":
+                case "mine-in-progress":
+                case "collapsed mine":
+                case "tower":
+                case "tower-in-progress":
+                case "sewer": return 4;
+            }
+            return 0;
+        }
+        public static int Province_Has_Port_City(Location myloc, List<Location> _locations)
+        {
+            if (myloc._LI_Here_List != null)
+            {
+                foreach (int dest in myloc._LI_Here_List)
+                {
+                    Location _mylochere2 = _locations.Find(x => x._LocId == dest);
+                    if (_mylochere2 != null)
+                    {
+                        if (_mylochere2._Loc_Type == "port city")
+                        {
+                            return _mylochere2._LocId;
+                        }
+                    }
+                }
+            }
+            return 0;
+        }
     } 
 }

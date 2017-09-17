@@ -40,7 +40,7 @@ namespace OlyCommonClasses
                         Write_Here_List_HTML(_myloc, w, _characters, _items, _locations, _ships, _storms);
                     }
                     // if hidden, print which factions have accessed it
-                    if (_myloc._LO_Hidden == 1)
+                    if (_myloc._LO_Hidden == 1 || (_locations.Find(g=>g._LocId == _myloc._Region_id)._Name == "Faery" || _locations.Find(g => g._LocId == _myloc._Region_id)._Name == "Hades"))
                     {
                         Write_Hidden_Accesses_HTML(_myloc, w, _players);
                     }
@@ -184,7 +184,7 @@ namespace OlyCommonClasses
                 outline3.Append(", hidden");
             }
             // civ level only for provinces, not sublocations
-            if (_myloc._LocId >= 10000 && _myloc._LocId < 18000)
+            if (_myloc._LocId >= 10000 && _myloc._LocId < 18000 && _myloc._Loc_Type != "ocean")
             {
                 outline3.Append(", " + (_myloc._LO_Civ_Level.Equals(0) ? "wilderness" : "civ-" + _myloc._LO_Civ_Level));
             }
@@ -524,198 +524,167 @@ namespace OlyCommonClasses
             {
                 if (_myloc._LO_Province_Destination[0] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[0], w, "North", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[0], w, "North", _myloc._Loc_Type, _locations);
                 }
             }
             if (_myloc._LO_Province_Destination.Count.CompareTo(1) > 0)
             {
                 if (_myloc._LO_Province_Destination[1] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[1], w, "East", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[1], w, "East", _myloc._Loc_Type, _locations);
                 }
             }
             if (_myloc._LO_Province_Destination.Count.CompareTo(2) > 0)
             {
                 if (_myloc._LO_Province_Destination[2] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[2], w, "South", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[2], w, "South", _myloc._Loc_Type, _locations);
                 }
             }
             if (_myloc._LO_Province_Destination.Count.CompareTo(3) > 0)
             {
                 if (_myloc._LO_Province_Destination[3] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[3], w, "West", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[3], w, "West", _myloc._Loc_Type, _locations);
                 }
             }
             if (_myloc._LO_Province_Destination.Count.CompareTo(4) > 0)
             {
                 if (_myloc._LO_Province_Destination[4] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[4], w, "Up", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[4], w, "Up", _myloc._Loc_Type, _locations);
                 }
             }
             if (_myloc._LO_Province_Destination.Count.CompareTo(5) > 0)
             {
                 if (_myloc._LO_Province_Destination[5] != 0)
                 {
-                    Write_Province_Destination_HTML(_myloc._LO_Province_Destination[5], w, "Down", _myloc._Loc_Type, _locations);
+                    Write_Province_Destination_HTML(_myloc, _myloc._LO_Province_Destination[5], w, "Down", _myloc._Loc_Type, _locations);
                 }
             }
             if (_locations.Find(x=>x._LocId == _myloc._LI_Where)._Loc_Type != "region")
             {
-                Write_Province_Destination_HTML(_myloc._LI_Where, w, "Out", _locations.Find(x => x._LocId == _myloc._LI_Where)._Loc_Type, _locations);
+                Write_Province_Destination_HTML(_myloc, _myloc._LI_Where, w, "Out", _locations.Find(x => x._LocId == _myloc._LI_Where)._Loc_Type, _locations);
             }
             w.WriteLine("</ul>");
         }
-        public static void Write_Province_Destination_HTML(Int32 destination_location, StreamWriter w, String dest, String from_type, List<Location> _locations)
+        public static void Write_Province_Destination_HTML(Location myloc, Int32 destination_location, StreamWriter w, String dest, String from_type, List<Location> _locations)
         {
             StringBuilder outline = new StringBuilder();
             Location _my_dest_loc = _locations.Find(x => x._LocId == destination_location);
-            outline.Append("<li>");
-            outline.Append(dest);
-            if (_my_dest_loc._Loc_Type.Contains("city"))
+            // if (Location.Province_Has_Port_City(_my_dest_loc, _locations))
+            if (((_my_dest_loc._Loc_Type.Equals("port city")) || Location.Province_Has_Port_City (_my_dest_loc, _locations) > 0) && myloc._Loc_Type == "ocean")
             {
-                outline.Append(", city");
-            }
-            outline.Append(", to ");
-            outline.Append(_my_dest_loc._Name + " ");
-            outline.Append(Utilities.Format_Anchor(_my_dest_loc._LocId_Conv));
-            // determine days to move
-            if (_my_dest_loc._LO_Barrier > 0)
-            {
-                outline.Append(", impassable<br>&nbsp;&nbsp;&nbsp;A magical barrier prevents entry.");
-            }
-            else
-            {
-                if (from_type == "ocean")
+                if (!_my_dest_loc._Loc_Type.Equals("port city"))
                 {
-                    if (_my_dest_loc._Loc_Type == "ocean")
-                    {
-                        outline.Append(", 3 days");
-                    }
-                    else
-                    {
-                        if ((_my_dest_loc._Loc_Type.Contains("city")))
-                        {
-                            outline.Append(", ");
-                            outline.Append(_locations.Find(x => x._LocId == _my_dest_loc._LI_Where)._Name);
-                            outline.Append(", 1 day");
-                        }
-                        else
-                        {
-                            outline.Append(", ");
-                            outline.Append(_locations.Find(x => x._LocId == _my_dest_loc._LI_Where)._Name);
-                            if (_my_dest_loc._Loc_Type == "mountain")
-                            {
-                                outline.Append(", impassable");
-                            }
-                            else
-                            {
-                                outline.Append(", 2 days");
-                            }
-                        }
-                    }
+                    //_my_dest_loc = _locations.Find(x => x._LocId == _my_dest_loc._LI_Where);
+                    _my_dest_loc = _locations.Find(x => x._LocId == Location.Province_Has_Port_City(_my_dest_loc, _locations));
+                }
+                outline.Clear();
+                Location _my_dest_loc_host = _locations.Find(x => x._LocId == _my_dest_loc._LI_Where);
+                outline.Append("<li>");
+                outline.Append(dest);
+                outline.Append(", port city");
+                outline.Append(", to ");
+                outline.Append(_my_dest_loc._Name);
+                outline.Append(Utilities.Format_Anchor(_my_dest_loc._LocId_Conv));
+                Location myloc_region = _locations.Find(d => d._LocId == myloc.Calc_CurrentRegion);
+                Location mydest_region = _locations.Find(e => e._LocId == _my_dest_loc.Calc_CurrentRegion);
+                if (myloc_region._Name != mydest_region._Name)
+                {
+                    outline.Append(", " + mydest_region._Name);
+                }
+                if (_my_dest_loc._LO_Barrier > 0)
+                {
+                    outline.Append(", impassable<br>&nbsp;&nbsp;&nbsp;A magical barrier prevents entry.");
                 }
                 else
                 {
-                    if (_my_dest_loc._Loc_Type == "plain")
+                    int days = (Location.Calc_Exit_Distance(myloc, _my_dest_loc));
+                    outline.Append(", " + (days + " " + (days == 1 ? "day" : "days")));
+                }
+                outline.Append("</li>");
+                w.WriteLine(outline);
+                outline.Clear();
+                outline.Append("<li>");
+                outline.Append(dest);
+                outline.Append(", to ");
+                outline.Append(_my_dest_loc_host._Name + " ");
+                outline.Append(Utilities.Format_Anchor(_my_dest_loc_host._LocId_Conv));
+                myloc_region = _locations.Find(d => d._LocId == myloc.Calc_CurrentRegion);
+                mydest_region = _locations.Find(e => e._LocId == _my_dest_loc.Calc_CurrentRegion);
+                if (myloc_region._Name != mydest_region._Name)
+                {
+                    outline.Append(", " + mydest_region._Name);
+                }
+                if (_my_dest_loc_host._LO_Barrier > 0)
+                {
+                    outline.Append(", impassable<br>&nbsp;&nbsp;&nbsp;A magical barrier prevents entry.");
+                }
+                else
+                {
+                    int days = (Location.Calc_Exit_Distance(myloc, _my_dest_loc_host));
+                    outline.Append(", impassable");
+                }
+                outline.Append("</li>");
+                w.WriteLine(outline);
+            }
+            else
+            {
+                outline.Clear();
+                outline.Append("<li>");
+                outline.Append(dest);
+                if (dest == "Out")
+                {
+                    outline.Append(", " + _my_dest_loc._Loc_Type);
+                }
+                outline.Append(", to ");
+                outline.Append(_my_dest_loc._Name + " ");
+                outline.Append(Utilities.Format_Anchor(_my_dest_loc._LocId_Conv));
+                Location _my_dest_loc_host = _locations.Find(x => x._LocId == destination_location);
+                Location myloc_region = _locations.Find(d => d._LocId == myloc.Calc_CurrentRegion);
+                Location mydest_region = _locations.Find(e => e._LocId == _my_dest_loc.Calc_CurrentRegion);
+                if (myloc_region._Name != mydest_region._Name)
+                {
+                    outline.Append(", " + mydest_region._Name);
+                }
+                // determine days to move
+                if (_my_dest_loc._LO_Barrier > 0)
+                {
+                    outline.Append(", impassable<br>&nbsp;&nbsp;&nbsp;A magical barrier prevents entry.");
+                }
+                else
+                {
+                    if (myloc._Loc_Type == "ocean" && _my_dest_loc._Loc_Type == "mountain")
                     {
-                        outline.Append(", 7 days");
+                        outline.Append(", impassable");
                     }
                     else
                     {
-                        if (_my_dest_loc._Loc_Type == "forest")
-                        {
-                            outline.Append(", 8 days");
-                        }
-                        else
-                        {
-                            if (_my_dest_loc._Loc_Type == "mountain")
-                            {
-                                outline.Append(", 10 days");
-                            }
-                            else
-                            {
-                                if (_my_dest_loc._Loc_Type == "swamp")
-                                {
-                                    outline.Append(", 14 days");
-                                }
-                                else
-                                {
-                                    if (_my_dest_loc._Loc_Type == "desert")
-                                    {
-                                        outline.Append(", 8 days");
-                                    }
-                                    else
-                                    {
-                                        if (_my_dest_loc._Loc_Type == "ocean")
-                                        {
-                                            outline.Append(", ");
-                                            outline.Append(_locations.Find(x => x._LocId == _my_dest_loc._LI_Where)._Name);
-                                            if (from_type == "mountain")
-                                            {
-                                                outline.Append(", impassable");
-                                            }
-                                            else
-                                            {
-                                                // see if contains city, if so, impassible
-                                                Boolean contains_city = false;
-                                                foreach (int destloc in _my_dest_loc._LO_Province_Destination)
-                                                {
-                                                    if ((_locations.Find(x => x._LocId == destloc)._Loc_Type.Contains("city")))
-                                                    {
-                                                        contains_city = true;
-                                                    }
-                                                }
-                                                if (!contains_city)
-                                                {
-                                                    outline.Append(", 2 days");
-                                                }
-                                                else
-                                                {
-                                                    outline.Append(", impassable");
-                                                }
-                                            }
-                                        }
-                                        else
-                                        {
-                                            if (dest == "Down" || dest == "Up")
-                                            {
-                                                outline.Append(", ");
-                                                outline.Append(_locations.Find(x => x._LocId == _my_dest_loc._LI_Where)._Name);
-                                            }
-                                            if (dest == "Down" || dest == "Up" || dest == "Out" || from_type == "tunnel" || _my_dest_loc._Loc_Type == "tunnel")
-                                            {
-                                                outline.Append(", 0 days");
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
+                        int days = (Location.Calc_Exit_Distance(myloc, _my_dest_loc));
+                        outline.Append(", " + days + " " + (days == 1 ? "day" : "days"));
                     }
                 }
+                outline.Append("</li>");
+                w.WriteLine(outline);
             }
-            outline.Append("</li>");
-            w.WriteLine(outline);
             // check to see if was moving to city from ocean
             // if so, need to write impassable line for province
-            if (from_type.Contains("ocean") && _my_dest_loc._Loc_Type.Contains("city"))
-            {
-                StringBuilder outlinein = new StringBuilder();
-                Location _my_dest_locin = _locations.Find(x => x._LocId == _my_dest_loc._LI_Where);
-                outlinein.Append("<li>");
-                outlinein.Append(dest);
-                outlinein.Append(", to ");
-                outlinein.Append(_my_dest_locin._Name + " ");
-                outlinein.Append(Utilities.Format_Anchor(_my_dest_locin._LocId_Conv));
-                outlinein.Append(", ");
-                outlinein.Append(_locations.Find(x => x._LocId == _my_dest_locin._LI_Where)._Name);
-                outlinein.Append(", impassable");
-                outlinein.Append("</li>");
-                w.WriteLine(outlinein);
-            }
+            //if (from_type.Contains("ocean") && _my_dest_loc._Loc_Type.Contains("city"))
+            //{
+            //    StringBuilder outlinein = new StringBuilder();
+            //    Location _my_dest_locin = _locations.Find(x => x._LocId == _my_dest_loc._LI_Where);
+            //    outlinein.Append("<li>");
+            //    outlinein.Append(dest);
+            //    outlinein.Append(", to ");
+            //    outlinein.Append(_my_dest_locin._Name + " ");
+            //    outlinein.Append(Utilities.Format_Anchor(_my_dest_locin._LocId_Conv));
+            //    outlinein.Append(", ");
+            //    outlinein.Append(_locations.Find(x => x._LocId == _my_dest_locin._LI_Where)._Name);
+            //    outlinein.Append(", impassable");
+            //    outlinein.Append("</li>");
+            //    w.WriteLine(outlinein);
+            //}
         }
         public static void Write_Here_List_HTML(Location _myloc, StreamWriter w, List<Character> _characters, List<Itemz> _items,  List<Location> _locations, List<Ship> _ships, List<Storm> _storms)
         {
@@ -853,7 +822,7 @@ namespace OlyCommonClasses
             outline.Append(Utilities.Format_Anchor(_my_dest_loc._LocId_Conv));
             outline.Append(", " + _my_dest_loc._Loc_Type);
             outline.Append(_my_dest_loc._LO_Hidden.Equals(1) ? ", hidden":"");
-            outline.Append((!_myloc._Loc_Type.Contains("city") && _my_dest_loc._SL_Defense == 0) ? ", 1 day" : "");
+            outline.Append((!_myloc._Loc_Type.Contains("city") && _my_dest_loc._SL_Defense == 0 && _my_dest_loc._SL_Effort_Given >= _my_dest_loc._SL_Effort_Required) ? ", 1 day" : "");
             outline.Append(_my_dest_loc._SL_Defense != 0 ?", defense " + _my_dest_loc._SL_Defense:"");
             if (_my_dest_loc._Loc_Type.Contains("castle"))
             {
